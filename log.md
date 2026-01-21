@@ -63,6 +63,33 @@ FROM cte\_transactions
 WHERE rn = 3;
 
 -----------------------------------------------------------------------------------------------------
+## 21 Jan 2026
 
+Q – Second Highest Salary
+Link: https://datalemur.com/questions/sql-second-highest-salary
 
+Keywords: value ranking, elimination logic
+Constraints: duplicate salaries allowed, single-value output required
+Decision: Identify the highest remaining salary after excluding the maximum.
 
+SELECT 
+    MAX(salary) AS second_highest_salary
+FROM employee
+WHERE salary < (
+    SELECT MAX(salary)
+    FROM employee
+);
+
+-- not using MAX()
+
+SELECT DISTINCT salary
+FROM employee
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+
+OFFSET 1
+→ skips the highest salary
+
+LIMIT 1
+→ returns exactly one value
+-----------------------------------------------------------------------------------------------------
