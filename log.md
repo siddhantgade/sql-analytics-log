@@ -93,3 +93,45 @@ OFFSET 1
 LIMIT 1
 → returns exactly one value
 -----------------------------------------------------------------------------------------------------
+## 22 Jan 2026
+
+Q – time spent snaps
+Link: https://datalemur.com/questions/time-spent-snaps
+
+Keywords: age bucket aggregation, activity time distribution
+Constraints: conditional aggregation must be row-level using CASE, aggregated totals must be computed before percentage calculation
+Decision: Calculate send and open time percentages per age bucket after aggregating user activity time.
+
+WITH cte_answer AS (
+  SELECT 
+    a.age_bucket,
+    SUM(
+      CASE 
+        WHEN ac.activity_type = 'send' THEN ac.time_spent 
+        ELSE 0 
+      END
+    ) AS time_spent_sending,
+    SUM(
+      CASE 
+        WHEN ac.activity_type = 'open' THEN ac.time_spent
+        ELSE 0
+      END
+    ) AS time_spent_opening
+  FROM activities ac 
+  INNER JOIN age_breakdown a
+    ON ac.user_id = a.user_id
+  GROUP BY a.age_bucket
+) 
+SELECT 
+  age_bucket,
+  ROUND(
+    (time_spent_sending * 100.0) /
+    (time_spent_sending + time_spent_opening),
+    2
+  ) AS send_perc,
+  ROUND(
+    (time_spent_opening * 100.0) /
+    (time_spent_sending + time_spent_opening),
+    2
+  ) AS open_perc
+FROM cte_answer;
