@@ -135,3 +135,56 @@ SELECT
     2
   ) AS open_perc
 FROM cte_answer;
+-----------------------------------------------------------------------------------------------------
+## 24 Jan 2026
+
+Q – Highest Grossing Products
+Link: https://datalemur.com/questions/sql-highest-grossing
+
+Keywords: aggregation, ranking
+Constraints: per-category ranking, year-based filtering
+Decision: Identify the top two highest-spending products within each category for a fixed time window.
+
+WITH cte_highest_grossing AS (
+  SELECT
+    category,
+    product,
+    SUM(spend) AS total_spend,
+    ROW_NUMBER() OVER (
+      PARTITION BY category
+      ORDER BY SUM(spend) DESC
+    ) AS rn
+  FROM product_spend
+  WHERE transaction_date >= '2022/01/01'
+    AND transaction_date <= '2022/12/31'
+  GROUP BY category, product
+)
+SELECT
+  category,
+  product,
+  total_spend
+FROM cte_highest_grossing
+WHERE rn < 3;
+-----------------------------------------------------------------------------------------------------
+## 25 Jan 2026
+
+Q – Tweets Rolling Averages
+Link: https://datalemur.com/questions/rolling-average-tweets
+
+Keywords: rolling aggregation, time series
+Constraints: ordered window frame, per-user isolation
+Decision: Compute a 3-day rolling average of tweet activity for each user over time.
+
+SELECT
+  user_id,
+  tweet_date,
+  ROUND(
+    AVG(tweet_count) OVER (
+      PARTITION BY user_id
+      ORDER BY tweet_date
+      ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ),
+    2
+  ) AS tweet_count
+FROM tweets;
+-----------------------------------------------------------------------------------------------------
