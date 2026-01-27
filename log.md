@@ -1,32 +1,19 @@
-\# SQL Analytics Log
-
-
+# SQL Analytics Log
 
 Daily compressed SQL problem-solving log.
 
 Append-only. One commit per day.
 
-
-
 ----------------------------------------------------------------------------------------------------
+## 2026-01-20
 
-\## 2026-01-20
-
-
-
-Q – SQL Third Transaction
+Q) SQL Third Transaction
 
 Link: https://datalemur.com/questions/sql-third-transaction
 
-
-
 Keywords: ranking, partitioning
-
 Constraints: ordering must be by transaction\_date, row numbering must reset per user
-
 Decision: Select the third row per user after ranking transactions
-
-
 
 WITH cte\_transactions AS (
 
@@ -65,7 +52,7 @@ WHERE rn = 3;
 -----------------------------------------------------------------------------------------------------
 ## 21 Jan 2026
 
-Q – Second Highest Salary
+Q) Second Highest Salary
 Link: https://datalemur.com/questions/sql-second-highest-salary
 
 Keywords: value ranking, elimination logic
@@ -95,7 +82,7 @@ LIMIT 1
 -----------------------------------------------------------------------------------------------------
 ## 22 Jan 2026
 
-Q – time spent snaps
+Q) time spent snaps
 Link: https://datalemur.com/questions/time-spent-snaps
 
 Keywords: age bucket aggregation, activity time distribution
@@ -138,7 +125,7 @@ FROM cte_answer;
 -----------------------------------------------------------------------------------------------------
 ## 24 Jan 2026
 
-Q – Highest Grossing Products
+Q) Highest Grossing Products
 Link: https://datalemur.com/questions/sql-highest-grossing
 
 Keywords: aggregation, ranking
@@ -168,7 +155,7 @@ WHERE rn < 3;
 -----------------------------------------------------------------------------------------------------
 ## 25 Jan 2026
 
-Q – Tweets Rolling Averages
+Q) Tweets Rolling Averages
 Link: https://datalemur.com/questions/rolling-average-tweets
 
 Keywords: rolling aggregation, time series
@@ -188,3 +175,33 @@ SELECT
   ) AS tweet_count
 FROM tweets;
 -----------------------------------------------------------------------------------------------------
+## 26 Jan 2026
+
+Q) Signup Confirmation Rate
+
+Link: https://datalemur.com/questions/signup-confirmation-rate
+
+Keywords: user-level aggregation, activation rate
+Constraints: users may have multiple signup attempts; activation defined by at least one confirmation
+Decision: Compute activation rate by collapsing multiple attempts into a single outcome per user.
+
+WITH user_activation AS (
+  SELECT
+    e.user_id,
+    MAX(
+      CASE 
+        WHEN t.signup_action = 'Confirmed' THEN 1
+        ELSE 0
+      END
+    ) AS activated
+  FROM emails e
+  LEFT JOIN texts t
+    ON e.email_id = t.email_id
+  WHERE e.signup_date IS NOT NULL
+  GROUP BY e.user_id
+)
+SELECT
+  ROUND(AVG(activated), 2) AS activation_rate
+FROM user_activation;
+-----------------------------------------------------------------------------------------------------
+
