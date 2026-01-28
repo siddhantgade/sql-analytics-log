@@ -175,7 +175,7 @@ SELECT
   ) AS tweet_count
 FROM tweets;
 -----------------------------------------------------------------------------------------------------
-## 26 Jan 2026
+## 28 Jan 2026
 
 Q) Signup Confirmation Rate
 
@@ -204,4 +204,37 @@ SELECT
   ROUND(AVG(activated), 2) AS activation_rate
 FROM user_activation;
 -----------------------------------------------------------------------------------------------------
+## 29 Jan 2026
 
+Q) Spotify Streaming History
+
+Link: https://datalemur.com/questions/spotify-streaming-history
+
+Keywords: historical aggregation, event accumulation
+Constraints: history data has no timestamps, weekly data must be filtered up to August 4
+Decision: Combine pre-aggregated historical plays with counted recent plays to compute total plays per user and song.
+
+SELECT
+  user_id,
+  song_id,
+  SUM(total_plays) AS song_count
+FROM (
+  SELECT
+    user_id,
+    song_id,
+    song_plays AS total_plays
+  FROM songs_history
+
+  UNION ALL
+
+  SELECT
+    user_id,
+    song_id,
+    COUNT(*) AS total_plays
+  FROM songs_weekly
+  WHERE listen_time < '2022-08-05'
+  GROUP BY user_id, song_id
+) combined
+GROUP BY user_id, song_id
+ORDER BY song_count DESC;
+-----------------------------------------------------------------------------------------------------
