@@ -238,3 +238,25 @@ FROM (
 GROUP BY user_id, song_id
 ORDER BY song_count DESC;
 -----------------------------------------------------------------------------------------------------
+## 2 Feb 2026
+
+Q) Supercloud Customer
+Link: https://datalemur.com/questions/supercloud-customer
+
+Keywords: group-level filtering, distinct count
+Constraints: must evaluate per customer after grouping, must compare against total category count
+Decision: Identify customers who have purchased from every available product category.
+
+SELECT
+  cc.customer_id
+FROM
+  customer_contracts cc
+JOIN
+  products p
+  ON cc.product_id = p.product_id
+GROUP BY
+  cc.customer_id
+HAVING
+  COUNT(DISTINCT p.product_category) =
+  (SELECT COUNT(DISTINCT product_category) FROM products);
+-----------------------------------------------------------------------------------------------------
