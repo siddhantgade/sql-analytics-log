@@ -260,3 +260,40 @@ HAVING
   COUNT(DISTINCT p.product_category) =
   (SELECT COUNT(DISTINCT product_category) FROM products);
 -----------------------------------------------------------------------------------------------------
+## 4 Feb 2026
+
+Q) Odd vs Even Measurements
+
+Link: https://datalemur.com/questions/odd-even-measurements
+
+Keywords: sequence-based classification, per-day isolation
+Constraints: full-date partitioning required, sequence must be based on time order
+Decision: Assign an ordered position to each reading per day and aggregate values by odd and even positions.
+
+WITH daily_measurements AS (
+    SELECT
+        DATE(measurement_time) AS measurement_date,
+        measurement_value,
+        ROW_NUMBER() OVER (
+            PARTITION BY DATE(measurement_time)
+            ORDER BY measurement_time ASC
+        ) AS reading_sequence
+    FROM measurements
+)
+SELECT
+    measurement_date,
+    SUM(
+        CASE 
+            WHEN reading_sequence % 2 = 1 THEN measurement_value
+            ELSE 0
+        END
+    ) AS odd_sum,
+    SUM(
+        CASE 
+            WHEN reading_sequence % 2 = 0 THEN measurement_value
+            ELSE 0
+        END
+    ) AS even_sum
+FROM daily_measurements
+GROUP BY measurement_date;
+-----------------------------------------------------------------------------------------------------
