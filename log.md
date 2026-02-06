@@ -297,3 +297,40 @@ SELECT
 FROM daily_measurements
 GROUP BY measurement_date;
 -----------------------------------------------------------------------------------------------------
+## 5 Feb 2026
+
+Q) Swapped Food Delivery
+Link: https://datalemur.com/questions/sql-swapped-food-delivery
+
+Keywords: row pairing, source position mapping
+Constraints: independent row sequence must be created, last unpaired row must remain unchanged
+Decision: compute a source row for each position first, then fetch the item from that source
+
+WITH numbered AS (
+    SELECT
+        ROW_NUMBER() OVER (ORDER BY id) AS rn,
+        item
+    FROM orders
+),
+helper AS (
+    SELECT
+        rn,
+        CASE
+            WHEN rn % 2 = 1
+                 AND rn < (SELECT MAX(rn) FROM numbered)
+            THEN rn + 1
+            WHEN rn % 2 = 0
+            THEN rn - 1
+            ELSE rn
+        END AS source_rn
+    FROM numbered
+)
+SELECT
+    h.rn,
+    n.item
+FROM helper h
+JOIN numbered n
+    ON h.source_rn = n.rn
+ORDER BY h.rn;
+-----------------------------------------------------------------------------------------------------
+
