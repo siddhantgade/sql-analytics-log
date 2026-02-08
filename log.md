@@ -333,4 +333,36 @@ JOIN numbered n
     ON h.source_rn = n.rn
 ORDER BY h.rn;
 -----------------------------------------------------------------------------------------------------
+## 8 Feb 2026
 
+Q) Bloomberg Stock Min Max (Monthly Open)
+Link: https://datalemur.com/questions/sql-bloomberg-stock-min-max-1
+
+Keywords: window ranking, monthly aggregation
+Constraints: month must be defined before comparison; row-level selection required to preserve month-value linkage
+Decision: Rank month-level rows per ticker to select highest and lowest monthly opens without losing date context.
+
+WITH cte_stock AS (
+  SELECT
+    ticker,
+    TO_CHAR(date, 'Mon-YYYY') AS month_year,
+    open,
+    ROW_NUMBER() OVER (
+      PARTITION BY ticker
+      ORDER BY open DESC
+    ) AS rn_high,
+    ROW_NUMBER() OVER (
+      PARTITION BY ticker
+      ORDER BY open ASC
+    ) AS rn_low
+  FROM stock_prices
+)
+SELECT
+  ticker,
+  MAX(CASE WHEN rn_high = 1 THEN month_year END) AS highest_month,
+  MAX(CASE WHEN rn_high = 1 THEN open END)       AS highest_open,
+  MAX(CASE WHEN rn_low = 1 THEN month_year END)  AS lowest_month,
+  MAX(CASE WHEN rn_low = 1 THEN open END)        AS lowest_open
+FROM cte_stock
+GROUP BY ticker
+ORDER BY ticker;
