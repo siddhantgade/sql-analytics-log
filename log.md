@@ -366,3 +366,50 @@ SELECT
 FROM cte_stock
 GROUP BY ticker
 ORDER BY ticker;
+-----------------------------------------------------------------------------------------------------
+## 10 Feb 2026
+
+Q) Amazon Shopping Spree
+Link: https://datalemur.com/questions/amazon-shopping-spree
+
+Keywords: streak detection, temporal sequencing
+Constraints: consecutive days must be derived from date differences not row order, streak grouping must reset only on non-consecutive days
+Decision: identify users who have at least one sequence of three calendar days with purchases
+
+WITH cte_transactions AS (
+    SELECT
+        user_id,
+        transaction_date,
+        CASE
+            WHEN transaction_date =
+                 LAG(transaction_date) OVER (
+                     PARTITION BY user_id
+                     ORDER BY transaction_date
+                 ) + INTERVAL '1 day'
+            THEN 1
+            ELSE 0
+        END AS is_consecutive
+    FROM transactions
+),
+cte_streaks AS (
+    SELECT
+        user_id,
+        transaction_date,
+        is_consecutive,
+        SUM(CASE WHEN is_consecutive = 0 THEN 1 ELSE 0 END)
+            OVER (PARTITION BY user_id ORDER BY transaction_date) AS streak_id
+    FROM cte_transactions
+),
+cte_counts AS (
+    SELECT
+        user_id,
+        streak_id,
+        COUNT(*) FILTER (WHERE is_consecutive = 1) AS consecutive_count
+    FROM cte_streaks
+    GROUP BY user_id, streak_id
+)
+SELECT DISTINCT user_id
+FROM cte_counts
+WHERE consecutive_count >= 2
+ORDER BY user_id;
+-----------------------------------------------------------------------------------------------------
