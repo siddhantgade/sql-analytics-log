@@ -413,3 +413,29 @@ FROM cte_counts
 WHERE consecutive_count >= 2
 ORDER BY user_id;
 -----------------------------------------------------------------------------------------------------
+## 12 Feb 2026
+
+Q) Best Selling Product Per Category
+Link: https://datalemur.com/questions/best-selling-products
+
+Keywords: Window Ranking, Top-Per-Group
+Constraints: Window function result cannot be filtered in same SELECT layer, Subquery requires alias and creates derived table scope
+Decision: Select the highest-selling product per category using rating as tie-breaker
+
+SELECT 
+  rp.product_name,
+  rp.category_name
+FROM (
+  SELECT 
+    p.product_name,
+    p.category_name,
+    ROW_NUMBER() OVER (
+      PARTITION BY p.category_name
+      ORDER BY ps.sales_quantity DESC, ps.rating DESC
+    ) AS category_rank
+  FROM products p
+  INNER JOIN product_sales ps
+    ON p.product_id = ps.product_id
+) rp
+WHERE rp.category_rank = 1
+ORDER BY rp.category_name;
