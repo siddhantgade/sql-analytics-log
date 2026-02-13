@@ -439,3 +439,39 @@ FROM (
 ) rp
 WHERE rp.category_rank = 1
 ORDER BY rp.category_name;
+-----------------------------------------------------------------------------------------------------
+## 13 Feb 2026
+
+Q) Most Recent Purchase Count per User
+Link: https://datalemur.com/questions/histogram-users-purchases
+
+Keywords: layered aggregation, dataset isolation
+Constraints: aggregate result must not be filtered in the same query layer, join must match on both user and derived max date
+Decision: isolate each user’s latest transaction date before counting products on that date
+
+WITH latest_transaction_per_user AS (
+    SELECT
+        user_id,
+        MAX(transaction_date) AS latest_transaction_date
+    FROM
+        user_transactions
+    GROUP BY
+        user_id
+)
+
+SELECT
+    ut.transaction_date,
+    ut.user_id,
+    COUNT(ut.product_id) AS product_count
+FROM
+    user_transactions ut
+JOIN
+    latest_transaction_per_user ltu
+    ON ut.user_id = ltu.user_id
+   AND ut.transaction_date = ltu.latest_transaction_date
+GROUP BY
+    ut.transaction_date,
+    ut.user_id
+ORDER BY
+    ut.transaction_date;
+-----------------------------------------------------------------------------------------------------
