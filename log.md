@@ -475,3 +475,25 @@ GROUP BY
 ORDER BY
     ut.transaction_date;
 -----------------------------------------------------------------------------------------------------
+## 14 Feb 2026
+
+Q) Alibaba Compressed Mode
+Link: https://datalemur.com/questions/alibaba-compressed-mode
+
+Keywords: aggregated dataset, frequency filtering
+Constraints: table is pre-aggregated so no re-counting allowed; ties must return all matching rows
+Decision: select item_count where order_occurrences equals the maximum frequency
+Business Context: Identifying the most common order size helps analyze purchasing behavior patterns.
+
+SELECT 
+  item_count AS mode
+FROM 
+  items_per_order
+WHERE 
+  order_occurrences = (
+    SELECT 
+      MAX(order_occurrences)
+    FROM
+      items_per_order
+  );
+-----------------------------------------------------------------------------------------------------
