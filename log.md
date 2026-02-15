@@ -497,3 +497,34 @@ WHERE
       items_per_order
   );
 -----------------------------------------------------------------------------------------------------
+## 15 Feb 2026
+
+Q) Card Launch Success
+Link: https://datalemur.com/questions/card-launch-success
+
+Keywords: first-occurrence-per-group, chronological ordering
+Constraints: ordering must include issue_year and issue_month; exactly one earliest record per card must be selected
+Decision: retrieve the earliest issuance record for each card
+Business Context: Used to evaluate first-month launch performance of each card product.
+
+WITH card_issue_ranked AS (
+    SELECT
+        card_name,
+        issued_amount,
+        ROW_NUMBER() OVER (
+            PARTITION BY card_name
+            ORDER BY issue_year, issue_month
+        ) AS row_num
+    FROM monthly_cards_issued
+)
+
+SELECT
+    card_name,
+    issued_amount
+FROM 
+    card_issue_ranked
+WHERE 
+    row_num = 1
+ORDER BY 
+    issued_amount DESC;
+-----------------------------------------------------------------------------------------------------
