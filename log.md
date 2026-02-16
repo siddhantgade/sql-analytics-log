@@ -528,3 +528,28 @@ WHERE
 ORDER BY 
     issued_amount DESC;
 -----------------------------------------------------------------------------------------------------
+## 16 Feb 2026
+
+Q) International Call Percentage
+Link: https://datalemur.com/questions/international-call-percentage
+
+Keywords: Self-Join, Conditional Aggregation
+Constraints: phone_info must be joined twice with distinct aliases; international calls must be counted without filtering out total rows
+Decision: Compute percentage of calls where caller and receiver countries differ using a single aggregation pass
+Business Context: Useful for analyzing cross-border telecom traffic patterns and revenue mix.
+
+SELECT 
+  ROUND(
+    (COUNT(
+        CASE 
+          WHEN caller_info.country_id != receiver_info.country_id 
+          THEN 1 
+        END
+    ) * 100.0) / COUNT(*), 
+  1) AS international_calls_pct
+FROM phone_calls pc
+INNER JOIN phone_info caller_info 
+  ON pc.caller_id = caller_info.caller_id
+INNER JOIN phone_info receiver_info
+  ON pc.receiver_id = receiver_info.caller_id;
+-----------------------------------------------------------------------------------------------------
