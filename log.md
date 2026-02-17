@@ -553,3 +553,37 @@ INNER JOIN phone_info caller_info
 INNER JOIN phone_info receiver_info
   ON pc.receiver_id = receiver_info.caller_id;
 -----------------------------------------------------------------------------------------------------
+## 17 Feb 2026
+
+Q) Top 3 Highest Salaries Per Department
+Link: 
+
+Keywords: Top-N per group, Partitioned ranking
+Constraints: Ranking must reset per department; Filtering must occur after window function evaluation
+Decision: Identify employees earning within the top three distinct salary levels in each department
+Business Context: Used to identify top earners per department for compensation benchmarking or performance review analysis.
+
+WITH cte_salaries AS (
+    SELECT 
+        d.department_name,
+        e.name,
+        e.salary,
+        DENSE_RANK() OVER (
+            PARTITION BY d.department_id
+            ORDER BY e.salary DESC
+        ) AS rn
+    FROM employee e
+    INNER JOIN department d
+        ON e.department_id = d.department_id
+)
+SELECT 
+    department_name,
+    name,
+    salary
+FROM cte_salaries
+WHERE rn <= 3
+ORDER BY 
+    department_name ASC,
+    salary DESC,
+    name ASC;
+-----------------------------------------------------------------------------------------------------
