@@ -587,3 +587,35 @@ ORDER BY
     salary DESC,
     name ASC;
 -----------------------------------------------------------------------------------------------------
+## 20 Feb 2026
+
+Q) Salary Difference Between Marketing and Engineering
+Link: https://platform.stratascratch.com/coding/10308-salaries-differences?code_type=1
+
+Keywords: Conditional aggregation, Scalar subquery
+Constraints: Correct foreign key join between employee and department tables; Department names must match exact case in filter condition
+Decision: Extract maximum salary per required department and compute absolute difference
+Business Context: Useful for identifying internal compensation gaps between major departments.
+
+WITH salary_differences AS (
+    SELECT 
+        (
+            SELECT MAX(e.salary)
+            FROM db_employee e
+            INNER JOIN db_dept d
+                ON e.department_id = d.id
+            WHERE d.department = 'marketing'
+        ) AS marketing_salary,
+        (
+            SELECT MAX(e.salary)
+            FROM db_employee e
+            INNER JOIN db_dept d
+                ON e.department_id = d.id
+            WHERE d.department = 'engineering'
+        ) AS engineering_salary
+)
+
+SELECT 
+    ABS(marketing_salary - engineering_salary)
+FROM salary_differences;
+-----------------------------------------------------------------------------------------------------
