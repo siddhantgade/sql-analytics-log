@@ -619,3 +619,39 @@ SELECT
     ABS(marketing_salary - engineering_salary)
 FROM salary_differences;
 -----------------------------------------------------------------------------------------------------
+22 Feb 2026
+
+Q) Finding Updated Records
+Link: http://platform.stratascratch.com/coding/10299-finding-updated-records?code_type=1
+Keywords: latest record selection, grouped ranking
+Constraints: ordering must be applied in outer query to guarantee final sort, ranking must reset per employee id
+Decision: select the most recent salary record for each employee
+Business Context: Useful for retrieving the current compensation details of employees from historical salary records.
+
+WITH employee_latest_salary AS (
+    SELECT 
+        id,
+        first_name,
+        last_name,
+        department_id,
+        salary,
+        ROW_NUMBER() OVER (
+            PARTITION BY id
+            ORDER BY salary DESC
+        ) AS rn
+    FROM ms_employee_salary
+)
+
+SELECT 
+    id,
+    first_name,
+    last_name,
+    department_id,
+    salary
+FROM 
+    employee_latest_salary
+WHERE 
+    rn = 1
+ORDER BY 
+    id;
+-----------------------------------------------------------------------------------------------------
