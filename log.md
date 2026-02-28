@@ -655,3 +655,31 @@ WHERE
 ORDER BY 
     id;
 -----------------------------------------------------------------------------------------------------
+28 Feb 2026
+
+Q0 Workers With The Highest Salaries
+Link: https://platform.stratascratch.com/coding/10353-workers-with-the-highest-salaries?code_type=1
+
+Keywords: scalar subquery, join alignment
+Constraints: maximum salary must be computed using the same join conditions as the outer query, aggregate value cannot be directly used in WHERE without subquery
+Decision: filter job titles where salary equals the maximum salary among workers with titles
+Business Context: Identify the job titles associated with the highest paid officially designated employees for compensation analysis. 
+
+SELECT
+    t.worker_title
+FROM
+    worker w
+INNER JOIN
+    title t
+    ON w.worker_id = t.worker_ref_id
+WHERE
+    w.salary = (
+        SELECT
+            MAX(w.salary)
+        FROM
+            worker w
+        INNER JOIN
+            title t
+            ON w.worker_id = t.worker_ref_id
+    );
+-----------------------------------------------------------------------------------------------------
