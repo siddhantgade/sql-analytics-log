@@ -683,3 +683,23 @@ WHERE
             ON w.worker_id = t.worker_ref_id
     );
 -----------------------------------------------------------------------------------------------------
+01 Mar 2026
+
+Q) Bikes Last Used
+Link: https://platform.stratascratch.com/coding/10176-bikes-last-used?code_type=1
+
+Keywords: Aggregation, Entity-level summarization
+Constraints: Non-aggregated columns must appear in GROUP BY; ORDER BY must reference aggregated result via alias
+Decision: Compute the most recent return timestamp per bike and rank by recency
+Business Context: Helps operations teams identify recently active bikes for fleet monitoring and redistribution.
+
+SELECT
+    bike_number,
+    MAX(end_time) AS last_used
+FROM
+    dc_bikeshare_q1_2012
+GROUP BY
+    bike_number
+ORDER BY
+    last_used DESC;
+-----------------------------------------------------------------------------------------------------
