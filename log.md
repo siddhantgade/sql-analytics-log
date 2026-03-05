@@ -703,3 +703,24 @@ GROUP BY
 ORDER BY
     last_used DESC;
 -----------------------------------------------------------------------------------------------------
+05 Mar 2026
+
+Q) Customer Details
+Link: https://platform.stratascratch.com/coding/9891-customer-details?code_type=1
+Keywords: Left Join, Relationship Mapping
+Constraints: Non-matching records must persist, Join key must maintain referential integrity
+Decision: Include all registered customers regardless of whether they have placed an order.
+Business Context: Identify customer purchasing patterns while maintaining a complete registry of the user base for marketing reach.
+
+SELECT
+    c.first_name,
+    c.last_name,
+    c.city,
+    o.order_details
+FROM
+    customers AS c
+LEFT JOIN
+    orders AS o
+    ON
+        c.id = o.cust_id;
+-----------------------------------------------------------------------------------------------------
