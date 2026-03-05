@@ -724,3 +724,23 @@ LEFT JOIN
     ON
         c.id = o.cust_id;
 -----------------------------------------------------------------------------------------------------
+05 Mar 2026
+
+Q) Average Bedrooms & Bathrooms by Property Type
+Link: https://platform.stratascratch.com/coding/9622-number-of-bathrooms-and-bedrooms?code_type=1
+
+Keywords: aggregation, categorical grouping
+Constraints: aggregation must occur per city-property_type pair, non-aggregated columns must appear in GROUP BY
+Decision: compute average bedrooms and bathrooms for each city and property type combination
+Business Context: Helps marketplace teams understand listing composition across cities and property categories for supply planning.
+
+SELECT
+    city,
+    property_type,
+    AVG(bathrooms) AS n_bathrooms_avg,
+    AVG(bedrooms) AS n_bedrooms_avg
+FROM airbnb_search_details
+GROUP BY
+    city,
+    property_type;
+-----------------------------------------------------------------------------------------------------
