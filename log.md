@@ -744,3 +744,27 @@ GROUP BY
     city,
     property_type;
 -----------------------------------------------------------------------------------------------------
+6 Mar 2026
+
+Q) Department Salary vs Department Average
+Link: https://platform.stratascratch.com/coding/9917-average-salaries/discussion?code_type=1
+
+Keywords: Department-level benchmarking, Salary distribution
+Constraints: Window aggregation must preserve row-level records, GROUP BY positional references must match selected columns
+Decision: Compare each employee salary against the average salary within their department.
+Business Context: HR teams may compare individual salaries against department averages to detect pay imbalances.
+
+SELECT
+    department,
+    first_name,
+    salary,
+    AVG(salary) OVER (
+        PARTITION BY department
+    ) AS avg_salary
+FROM
+    employee
+GROUP BY
+    1,
+    2,
+    3;
+-----------------------------------------------------------------------------------------------------
