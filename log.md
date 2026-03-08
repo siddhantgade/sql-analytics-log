@@ -768,3 +768,26 @@ GROUP BY
     2,
     3;
 -----------------------------------------------------------------------------------------------------
+7 Mar 2026
+
+Q) Lyft Driver Wages
+Link: https://platform.stratascratch.com/coding/10003-lyft-driver-wages?code_type=1
+
+Keywords: Range Filtering, Conditional Logic
+Constraints: Salary thresholds must be evaluated in a single WHERE clause, OR condition must combine both boundary checks
+Decision: Retrieve driver records whose salaries fall outside the middle salary band.
+Business Context: A ride-sharing company may review drivers earning at the lowest and highest salary brackets for compensation analysis.
+
+select 
+    index,
+    start_date,
+    end_date,
+    yearly_salary
+from 
+    lyft_drivers
+WHERE 
+    yearly_salary >= 30000 
+OR
+    yearly_salary >= 70000 
+;
+-----------------------------------------------------------------------------------------------------
