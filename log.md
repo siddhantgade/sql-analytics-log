@@ -791,3 +791,23 @@ OR
     yearly_salary >= 70000 
 ;
 -----------------------------------------------------------------------------------------------------
+9 march 2026
+
+Q) Artist Appearance Count
+Link: https://platform.stratascratch.com/coding/9992-find-artists-that-have-been-on-spotify-the-most-number-of-times?code_type=1
+
+Keywords: aggregation, frequency counting
+Constraints: artist must be included in GROUP BY when using COUNT; ordering must reference the derived occurrence count
+Decision: count how many ranking entries exist per artist and sort by that frequency
+Business Context: music analytics teams track how frequently artists appear in global charts to measure sustained popularity.
+
+SELECT
+    artist,
+    COUNT(position) AS n_occurences
+FROM
+    spotify_worldwide_daily_song_ranking
+GROUP BY
+    artist
+ORDER BY
+    n_occurences DESC;
+-----------------------------------------------------------------------------------------------------
