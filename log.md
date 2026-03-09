@@ -811,3 +811,30 @@ GROUP BY
 ORDER BY
     n_occurences DESC;
 -----------------------------------------------------------------------------------------------------
+9 march 2026
+
+Q) Customer Orders for Jill and Eva
+Link: https://platform.stratascratch.com/coding/9913-order-details?code_type=1
+
+Keywords: relational filtering, customer-order mapping
+Constraints: customer id must correctly map to order cust_id, name filter must match exact stored first_name values
+Decision: retrieve all orders belonging only to customers named Jill or Eva.
+Business Context: A sales team may need to quickly review the purchase history of specific VIP customers.
+
+select 
+    c.first_name,
+    o.order_date,
+    o.order_details,
+    o.total_order_cost
+from 
+    customers c 
+inner join
+    orders o
+on
+    c.id = o.cust_id
+where 
+    c.first_name in ('Jill', 'Eva')
+order by
+    c.id asc
+;
+-----------------------------------------------------------------------------------------------------
