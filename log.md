@@ -838,3 +838,25 @@ order by
     c.id asc
 ;
 -----------------------------------------------------------------------------------------------------
+10 march 2026
+
+Q) Average Hack Popularity by Employee Location
+Link: https://platform.stratascratch.com/coding/10061-popularity-of-hack?code_type=1
+
+Keywords: relational join, group aggregation
+Constraints: employee IDs must match across both tables, aggregation must occur after grouping by location
+Decision: combine employee and survey tables to compute average hack popularity per location
+Business Context: Helps internal teams compare innovation engagement levels across company office locations.
+
+SELECT
+    f.location,
+    AVG(fh.popularity) AS avg_popularity
+FROM
+    facebook_employees f
+INNER JOIN
+    facebook_hack_survey fh
+ON
+    f.id = fh.employee_id
+GROUP BY
+    f.location;
+-----------------------------------------------------------------------------------------------------
