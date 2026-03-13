@@ -860,3 +860,26 @@ ON
 GROUP BY
     f.location;
 -----------------------------------------------------------------------------------------------------
+13 march 2026
+
+Q) Top Ranked Songs
+
+Link: https://platform.stratascratch.com/coding/9991-top-ranked-songs?code_type=1
+
+Keywords: aggregation logic, row-level filtering
+Constraints: ranking column must already represent final song position; filtering must occur before grouping
+Decision: count occurrences of rows where songs reached position 1 per track.
+Business Context: A music analytics team may track how often songs reach the #1 position globally to measure sustained popularity.
+
+SELECT
+    DISTINCT trackname,
+    COUNT(id) AS times_top1
+FROM
+    spotify_worldwide_daily_song_ranking
+WHERE
+    position = 1
+GROUP BY 
+    trackname
+ORDER BY
+    times_top1 desc
+-----------------------------------------------------------------------------------------------------
