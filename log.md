@@ -883,3 +883,18 @@ GROUP BY
 ORDER BY
     times_top1 desc
 -----------------------------------------------------------------------------------------------------
+14 march 2026
+
+Q) Admin Department Employee Count
+Link: https://platform.stratascratch.com/coding/9845-find-the-number-of-employees-working-in-the-admin-department?code_type=1
+Keywords: Case-insensitive filtering, Conditional aggregation
+Constraints: Department values may vary in letter casing, Filtering must occur before aggregation
+Decision: Count employees in the Admin department who joined from April onward.
+Business Context: HR analytics teams often measure departmental hiring patterns within specific time windows to monitor seasonal recruitment activity.
+
+SELECT 
+    COUNT(worker_id) AS admin_employee_count
+FROM worker
+WHERE LOWER(department) LIKE 'admin'
+AND EXTRACT(MONTH FROM joining_date) >= 4;
+-----------------------------------------------------------------------------------------------------
