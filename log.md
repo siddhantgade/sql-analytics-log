@@ -898,3 +898,21 @@ FROM worker
 WHERE LOWER(department) LIKE 'admin'
 AND EXTRACT(MONTH FROM joining_date) >= 4;
 -----------------------------------------------------------------------------------------------------
+15 march 2026
+
+Q Annual Violations Count for Roxanne Cafe
+Link: https://platform.stratascratch.com/coding/9728-inspections-that-resulted-in-violations?code_type=1
+
+Keywords: temporal aggregation, dataset filtering
+Constraints: grouping must match extracted year level, aggregation must operate after restaurant filter
+Decision: aggregate violation records per inspection year for a specific restaurant.
+Business Context: Public health departments track yearly violation trends for individual restaurants to monitor compliance patterns over time.
+
+SELECT
+    EXTRACT(YEAR FROM inspection_date) AS inspection_year,
+    COUNT(DISTINCT violation_id) AS n_violations
+FROM sf_restaurant_health_violations
+WHERE business_name = 'Roxanne Cafe'
+GROUP BY EXTRACT(YEAR FROM inspection_date)
+ORDER BY inspection_year;
+-----------------------------------------------------------------------------------------------------
