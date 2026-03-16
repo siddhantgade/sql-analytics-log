@@ -916,3 +916,22 @@ WHERE business_name = 'Roxanne Cafe'
 GROUP BY EXTRACT(YEAR FROM inspection_date)
 ORDER BY inspection_year;
 -----------------------------------------------------------------------------------------------------
+16 march 2026
+
+Q) Street Churros Inspection Risk Lookup
+Link: https://platform.stratascratch.com/coding/9688-churro-activity-date?code_type=1
+
+Keywords: Row Filtering, Conditional Threshold
+Constraints: Exact facility name match is required; Only inspection records with score strictly below 95 must be returned
+Decision: Retrieve inspection dates and risk descriptions specifically for the STREET CHURROS facility when the inspection score falls below the defined threshold
+Business Context: A compliance team may review low-scoring inspections for a specific vendor to monitor potential health risk patterns.
+
+SELECT
+    activity_date,
+    pe_description
+FROM los_angeles_restaurant_health_inspections
+WHERE
+    facility_name = 'STREET CHURROS'
+AND
+    score < 95;
+-----------------------------------------------------------------------------------------------------
