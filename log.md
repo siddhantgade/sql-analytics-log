@@ -956,3 +956,20 @@ GROUP BY
 ORDER BY
     event_count desc;
 -----------------------------------------------------------------------------------------------------
+22 March 2026
+
+Q) New Products Net Change
+Link: https://platform.stratascratch.com/coding/10318-new-products?code_type=1
+
+Keywords: conditional aggregation, grouped comparison
+Constraints: counts must be computed per company, year-based filtering must not break grouping
+Decision: compute year-wise product counts within each company and subtract to get net change
+Business Context: Helps track year-over-year product launch performance across companies.
+
+SELECT
+    company_name,
+    COUNT(DISTINCT CASE WHEN year = 2020 THEN product_name END) -
+    COUNT(DISTINCT CASE WHEN year = 2019 THEN product_name END) AS net_products
+FROM car_launches
+GROUP BY company_name;
+-----------------------------------------------------------------------------------------------------
