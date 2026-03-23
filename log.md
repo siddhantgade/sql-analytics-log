@@ -973,3 +973,38 @@ SELECT
 FROM car_launches
 GROUP BY company_name;
 -----------------------------------------------------------------------------------------------------
+23 March 2026
+
+Q) Highest Daily Customer Order Cost
+Link: https://platform.stratascratch.com/coding/9915-highest-cost-orders?code_type=1
+
+Keywords: aggregation, ranking
+Constraints: daily total must be computed before ranking, ties must be preserved per date
+Decision: identify top customers per day based on aggregated order cost
+Business Context: Helps identify highest revenue-generating customers on a daily basis for targeted engagement.
+
+WITH daily_customer_totals AS (
+    SELECT 
+        c.first_name,
+        o.order_date,
+        SUM(o.total_order_cost) AS total_costs,
+        RANK() OVER (
+            PARTITION BY o.order_date
+            ORDER BY SUM(o.total_order_cost) DESC
+        ) AS rn
+    FROM customers c
+    INNER JOIN orders o
+        ON c.id = o.cust_id
+    WHERE o.order_date >= '2019-02-01'
+      AND o.order_date <= '2019-05-01'
+    GROUP BY 
+        c.first_name,
+        o.order_date
+)
+SELECT
+    first_name,
+    order_date,
+    total_costs
+FROM daily_customer_totals
+WHERE rn = 1;
+-----------------------------------------------------------------------------------------------------
