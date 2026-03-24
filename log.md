@@ -1008,3 +1008,33 @@ SELECT
 FROM daily_customer_totals
 WHERE rn = 1;
 -----------------------------------------------------------------------------------------------------
+24 march 2026
+
+Q) Risky Projects
+Link: https://platform.stratascratch.com/coding/10304-risky-projects?code_type=1
+
+Keywords: cost allocation, temporal adjustment
+Constraints: inclusive project duration must be applied, avoid integer truncation in division
+Decision: compute prorated employee cost per project and filter where it exceeds budget
+Business Context: Identify projects where actual labor cost over the project duration exceeds allocated budget to flag financial risk.
+
+select
+    lp.title,
+    lp.budget,
+    ROUND(SUM(le.salary * ((end_date - start_date + 1) / 365.0)),0) AS prorated_employee_expense
+from 
+    linkedin_projects lp
+INNER JOIN
+    linkedin_emp_projects lep
+ON 
+    lp.id = lep.project_id
+INNER JOIN
+    linkedin_employees le
+ON
+    lep.emp_id = le.id
+GROUP BY
+    lp.title,
+    lp.budget
+HAVING
+    SUM(le.salary * ((end_date - start_date + 1) / 365.0)) > lp.budget;
+-----------------------------------------------------------------------------------------------------
