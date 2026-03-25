@@ -1038,3 +1038,43 @@ GROUP BY
 HAVING
     SUM(le.salary * ((end_date - start_date + 1) / 365.0)) > lp.budget;
 -----------------------------------------------------------------------------------------------------
+25 March 2026
+
+Q) Email Activity Rank
+Link: https://platform.stratascratch.com/coding/10351-activity-rank?code_type=1
+
+Keywords: aggregation, window ranking
+Constraints: all CTEs must be declared within a single WITH clause, ranking must be globally applied without partitioning
+Decision: compute total emails per user and assign a unique rank based on descending activity with alphabetical tie-breaker
+Business Context: Identify the most active users on an email platform to prioritize engagement strategies.
+
+WITH cte_google_gmail_emails AS
+(
+SELECT
+    from_user,
+    COUNT(*) AS total_emails
+FROM
+    google_gmail_emails
+GROUP BY
+    from_user
+),
+cte_ranked AS (
+select
+    from_user,
+    total_emails,
+    ROW_NUMBER() OVER(
+    ORDER BY
+        total_emails desc,
+        from_user asc
+    ) AS activity_rank
+from 
+    cte_google_gmail_emails
+)
+SELECT
+    from_user,
+    total_emails,
+    activity_rank
+FROM
+    cte_ranked
+;
+-----------------------------------------------------------------------------------------------------
