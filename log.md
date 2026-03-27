@@ -1078,3 +1078,30 @@ FROM
     cte_ranked
 ;
 -----------------------------------------------------------------------------------------------------
+27 March 2026
+
+Q) Finding Purchases Within 7 Days
+Link: https://platform.stratascratch.com/coding/10553-finding-purchases?code_type=1
+
+Keywords: temporal comparison, row sequencing
+Constraints: correct ordering required for LAG to access immediate previous row, DISTINCT must be applied after filtering to avoid multiple rows per user
+Decision: compare each transaction with its immediate previous one and return unique users
+Business Context: Identify users with short purchase cycles to analyze retention behavior
+
+WITH user_transactions AS (
+    SELECT
+        user_id,
+        created_at,
+        LAG(created_at) OVER (
+            PARTITION BY user_id
+            ORDER BY created_at
+        ) AS previous_created_at
+    FROM amazon_transactions
+)
+SELECT DISTINCT
+    user_id
+FROM user_transactions
+WHERE
+    created_at > previous_created_at
+    AND created_at < previous_created_at + INTERVAL '7 days';
+-----------------------------------------------------------------------------------------------------
