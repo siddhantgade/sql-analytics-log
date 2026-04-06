@@ -1132,3 +1132,44 @@ GROUP BY
 ORDER BY
     apartment_count DESC;
 -----------------------------------------------------------------------------------------------------
+06 April 2026
+
+Q) Matching Hosts and Guests by Gender and Nationality
+Link: https://platform.stratascratch.com/coding/10078-find-matching-hosts-and-guests-in-a-way-that-they-are-both-of-the-same-gender-and-nationality?code_type=1
+
+Keywords: controlled pairing, group alignment
+Constraints: must avoid many-to-many join explosion, must assign row numbers before joining
+Decision: create one-to-one matches by aligning ranked rows within each gender and nationality group
+Business Context: Used in platforms to fairly match users based on shared attributes without duplication.
+
+WITH ranked_hosts AS (
+    SELECT
+        host_id,
+        gender,
+        nationality,
+        ROW_NUMBER() OVER (
+            PARTITION BY gender, nationality
+            ORDER BY host_id
+        ) AS row_num
+    FROM airbnb_hosts
+),
+ranked_guests AS (
+    SELECT
+        guest_id,
+        gender,
+        nationality,
+        ROW_NUMBER() OVER (
+            PARTITION BY gender, nationality
+            ORDER BY guest_id
+        ) AS row_num
+    FROM airbnb_guests
+)
+SELECT
+    h.host_id,
+    g.guest_id
+FROM ranked_hosts h
+INNER JOIN ranked_guests g
+    ON h.gender = g.gender
+   AND h.nationality = g.nationality
+   AND h.row_num = g.row_num;
+-----------------------------------------------------------------------------------------------------
