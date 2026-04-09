@@ -1173,3 +1173,47 @@ INNER JOIN ranked_guests g
    AND h.nationality = g.nationality
    AND h.row_num = g.row_num;
 -----------------------------------------------------------------------------------------------------
+09 April 2026
+
+Q) Acceptance Rate By Date
+Link: https://platform.stratascratch.com/coding/10285-acceptance-rate-by-date?code_type=1
+
+Keywords: event mapping, pair matching
+Constraints: join must be on sender and receiver together, accepted events must not be filtered in WHERE with sent
+Decision: compute acceptance rate by mapping sent requests to accepted pairs
+Business Context: Helps measure how effectively users convert connection requests into accepted relationships on a platform
+
+WITH sent_requests AS (
+    SELECT 
+        date,
+        user_id_sender,
+        user_id_receiver
+    FROM
+        fb_friend_requests
+    WHERE
+        action = 'sent'
+),
+accepted_requests AS (
+    SELECT
+        DISTINCT 
+        user_id_sender,
+        user_id_receiver
+    FROM
+        fb_friend_requests
+    WHERE
+        action = 'accepted'
+)
+SELECT
+    s.date,
+    (COUNT(a.user_id_sender) * 100.0 / COUNT(*)) AS percentage_acceptance
+FROM
+    sent_requests s
+LEFT JOIN
+    accepted_requests a
+ON
+    s.user_id_sender = a.user_id_sender
+AND
+    s.user_id_receiver = a.user_id_receiver
+GROUP BY
+    s.date;
+-----------------------------------------------------------------------------------------------------
