@@ -1217,3 +1217,39 @@ AND
 GROUP BY
     s.date;
 -----------------------------------------------------------------------------------------------------
+18 April 2026
+
+Q) Finding Returning Users Within 7 Days
+Link: https://platform.stratascratch.com/coding/10322-finding-user-purchases?code_type=1
+
+Keywords: sequential comparison, retention window
+Constraints: correct pairing of first and second purchase, valid date difference calculation between two rows
+Decision: identify users whose second purchase occurs within 1–7 days after their first purchase
+Business Context: Helps measure early user retention by tracking quick repeat purchases after initial engagement.
+
+WITH user_purchase_sequence AS (
+    SELECT
+        user_id,
+        created_at,
+        ROW_NUMBER() OVER (
+            PARTITION BY user_id
+            ORDER BY created_at ASC
+        ) AS rn,
+        LEAD(created_at) OVER (
+            PARTITION BY user_id
+            ORDER BY created_at ASC
+        ) AS next_date
+    FROM
+        amazon_transactions
+)
+
+SELECT 
+    user_id
+FROM user_purchase_sequence
+WHERE
+    rn = 1 
+AND
+    next_date IS NOT NULL
+AND
+    DATEDIFF(next_date, created_at) BETWEEN 1 AND 7;
+-----------------------------------------------------------------------------------------------------
