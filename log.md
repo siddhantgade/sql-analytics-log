@@ -1253,3 +1253,31 @@ AND
 AND
     DATEDIFF(next_date, created_at) BETWEEN 1 AND 7;
 -----------------------------------------------------------------------------------------------------
+10 may 2026
+
+Q – Ranking Most Active Guests
+
+Link: https://platform.stratascratch.com/coding/10159-ranking-most-active-guests?code_type=1
+
+Keywords: aggregation, ranking
+Constraints: avoided grouping by message-level values, ranking sequence had to be applied after aggregation
+Decision: Ranked guests based on total exchanged messages.
+Business Context: A hospitality platform can identify highly engaged users for retention campaigns and customer experience analysis.
+
+WITH guest_message_summary AS (
+    SELECT
+        id_guest,
+        SUM(n_messages) AS sum_n_messages,
+        DENSE_RANK() OVER (
+            ORDER BY SUM(n_messages) DESC
+        ) AS ranking
+    FROM airbnb_contacts
+    GROUP BY id_guest
+)
+
+SELECT
+    ranking,
+    id_guest,
+    sum_n_messages
+FROM guest_message_summary;
+-----------------------------------------------------------------------------------------------------
