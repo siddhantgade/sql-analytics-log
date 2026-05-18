@@ -1281,3 +1281,43 @@ SELECT
     sum_n_messages
 FROM guest_message_summary;
 -----------------------------------------------------------------------------------------------------
+18 May 2026
+
+Q – Income By Title And Gender
+Link: https://platform.stratascratch.com/coding/10077-income-by-title-and-gender?code_type=1
+
+Keywords: Granularity Handling, Layered Aggregation
+Constraints: Salary must not be duplicated across multiple bonus rows, Aggregation must occur at employee-level before averaging
+Decision: Calculate one compensation value per employee before computing grouped averages
+Business Context: Used in payroll and incentive reporting to calculate average compensation across organizational categories.
+
+WITH employee_bonus_summary AS
+(
+    SELECT
+        worker_ref_id,
+        SUM(bonus) AS total_bonus
+    FROM sf_bonus
+    GROUP BY worker_ref_id
+),
+
+employee_compensation AS
+(
+    SELECT
+        e.id,
+        e.employee_title,
+        e.sex,
+        e.salary + ebs.total_bonus AS compensation
+    FROM sf_employee e
+    INNER JOIN employee_bonus_summary ebs
+        ON e.id = ebs.worker_ref_id
+)
+
+SELECT
+    employee_title,
+    sex,
+    AVG(compensation) AS avg_compensation
+FROM employee_compensation
+GROUP BY
+    employee_title,
+    sex;
+-----------------------------------------------------------------------------------------------------
