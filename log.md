@@ -1,3 +1,4 @@
+```sql
 # SQL Analytics Log
 
 Daily compressed SQL problem-solving log.
@@ -1321,3 +1322,4 @@ GROUP BY
     employee_title,
     sex;
 -----------------------------------------------------------------------------------------------------
+```
