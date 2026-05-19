@@ -1322,4 +1322,38 @@ GROUP BY
     employee_title,
     sex;
 -----------------------------------------------------------------------------------------------------
+19 May 2026
+
+Q – Highest Target Achieved Under Manager
+Link: https://platform.stratascratch.com/coding/9905-highest-target-under-manager?code_type=1
+
+Keywords: Window Ranking, Common Table Expression
+Constraints: Manager filtering must happen before ranking, Tied highest targets must return all matching employees
+Decision: Identify employees with the highest target under a specific manager.
+Business Context: Used to identify top-performing sales employees reporting to a specific manager for performance tracking.
+
+WITH ranked_employee_targets AS
+(
+    SELECT
+        first_name,
+        target,
+        DENSE_RANK() OVER
+        (
+            ORDER BY target DESC
+        ) AS target_rank
+    FROM 
+        salesforce_employees
+    WHERE
+        manager_id = 13
+)
+
+SELECT
+    first_name,
+    target
+FROM
+    ranked_employee_targets
+WHERE
+    target_rank = 1
+;
+-----------------------------------------------------------------------------------------------------
 ```
