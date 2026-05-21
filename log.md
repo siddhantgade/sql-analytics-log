@@ -1356,4 +1356,28 @@ WHERE
     target_rank = 1
 ;
 -----------------------------------------------------------------------------------------------------
+21 May 2026
+
+Q) HR Department Employees With Duplicate Output
+Link: https://platform.stratascratch.com/coding/9858-find-employees-in-the-hr-department-and-output-the-result-with-one-duplicate
+
+Keywords: Set Operations, Duplicate Preservation
+Constraints: Both SELECT statements must return identical column structure, Duplicate rows must not be removed
+Decision: Return HR department employees twice in the final output
+Business Context: This can be used to intentionally duplicate department-level employee records for audit testing or downstream validation scenarios.
+
+SELECT
+    first_name,
+    department
+FROM worker
+WHERE department = 'HR'
+
+UNION ALL
+
+SELECT
+    first_name,
+    department
+FROM worker
+WHERE department = 'HR';
+-----------------------------------------------------------------------------------------------------
 ```
