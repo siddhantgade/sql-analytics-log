@@ -1380,4 +1380,24 @@ SELECT
 FROM worker
 WHERE department = 'HR';
 -----------------------------------------------------------------------------------------------------
+31 May 2026
+
+Q) Word Frequency in Draft Contents
+Link: https://platform.stratascratch.com/coding/9817-find-the-number-of-times-each-word-appears-in-drafts?code_type=1
+
+Keywords: Text Normalization, Frequency Analysis
+Constraints: Punctuation must be removed before counting, Word comparison must be case-insensitive
+Decision: Count occurrences of each cleaned word across all draft contents.
+Business Context: Content teams can use word frequency analysis to identify commonly used terms in draft documents.
+
+SELECT LOWER(word) AS word,
+       COUNT(*) AS occurrences
+FROM google_file_store t,
+     regexp_split_to_table(
+         regexp_replace(t.contents, '[[:punct:]]', '', 'g'),
+         E'\\s+'
+     ) AS word
+GROUP BY LOWER(word)
+ORDER BY occurrences DESC;
+-----------------------------------------------------------------------------------------------------
 ```
