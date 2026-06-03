@@ -1400,4 +1400,30 @@ FROM google_file_store t,
 GROUP BY LOWER(word)
 ORDER BY occurrences DESC;
 -----------------------------------------------------------------------------------------------------
+3 June 2026
+
+Q – Facebook Matching User Pairs
+Link: https://platform.stratascratch.com/coding/10085-facebook-matching-users-pairs?code_type=1
+
+Keywords: Self Join, Record Pairing
+Constraints: Different employee IDs, Matching location and gender
+Decision: Identify employee pairs that satisfy the specified matching criteria.
+Issue Faced: Initially joined records on the same ID, which made the age and seniority conditions impossible to satisfy. Also overlooked that the query could return duplicate pairs such as (A,B) and (B,A).
+Business Context: Can be used to identify employee pairs for mentorship, collaboration, or demographic-based workforce analysis.
+
+SELECT
+    fe1.id,
+    fe2.id
+FROM
+    facebook_employees fe1
+JOIN
+    facebook_employees fe2
+ON
+    fe1.id != fe2.id
+WHERE
+    fe1.location = fe2.location
+    AND fe1.age <> fe2.age
+    AND fe1.gender = fe2.gender
+    AND fe1.is_senior <> fe2.is_senior;
+-----------------------------------------------------------------------------------------------------
 ```
