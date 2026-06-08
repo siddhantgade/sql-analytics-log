@@ -1426,4 +1426,25 @@ WHERE
     AND fe1.gender = fe2.gender
     AND fe1.is_senior <> fe2.is_senior;
 -----------------------------------------------------------------------------------------------------
+8 June 2026
+
+Q) Percentage of Shipable Orders
+Link: https://platform.stratascratch.com/coding/10090-find-the-percentage-of-shipable-orders?code_type=1
+
+Keywords: Conditional Aggregation, Percentage Calculation
+Constraints: Denominator must include all orders, Decimal arithmetic must be preserved
+Decision: Calculate the percentage of orders with a valid shipping address out of all orders.
+Issue Faced: Initially filtered out non-shipable orders causing an incorrect denominator, then encountered integer division truncating decimal results.
+Business Context: Measure the proportion of customer orders that can be fulfilled immediately based on available shipping information.
+
+SELECT 
+    COUNT(
+        CASE
+            WHEN c.address IS NOT NULL THEN 1
+        END
+    ) * 100.0 / COUNT(*) AS percent_shipable
+FROM orders o
+INNER JOIN customers c
+    ON o.cust_id = c.id;
+-----------------------------------------------------------------------------------------------------
 ```
