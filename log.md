@@ -1447,4 +1447,24 @@ FROM orders o
 INNER JOIN customers c
     ON o.cust_id = c.id;
 -----------------------------------------------------------------------------------------------------
+10 June 2026
+
+Q) Top Cool Votes
+Link: https://platform.stratascratch.com/coding/10060-top-cool-votes?code_type=1
+
+Keywords: Ranking, Prioritization
+Constraints: Sort by cool in descending order, Return only the top 2 rows
+Decision: Retrieve the two reviews with the highest cool votes
+Issue Faced: Identifying the correct ordering direction before limiting the result set
+Business Context: A review platform can use this query to surface the most appreciated reviews for users.
+
+SELECT
+    business_name,
+    review_text
+FROM
+    yelp_reviews
+ORDER BY
+    cool DESC
+LIMIT 2;
+-----------------------------------------------------------------------------------------------------
 ```
