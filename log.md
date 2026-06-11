@@ -1467,4 +1467,25 @@ ORDER BY
     cool DESC
 LIMIT 2;
 -----------------------------------------------------------------------------------------------------
+11 June 2026
+
+Q) Reviews by Business Category
+Link: https://platform.stratascratch.com/coding/10049-reviews-of-categories?code_type=1
+
+Keywords: Data Normalization, Aggregation
+Constraints: Categories must be split using semicolon delimiters, Review counts must be aggregated after category expansion
+Decision: Expand category values and calculate total reviews per category
+Issue Faced: Did not know the UNNEST function for converting array elements into separate rows
+Business Context: Helps identify which business categories receive the highest volume of customer reviews across the platform
+
+select 
+    UNNEST(STRING_TO_ARRAY(categories, ';')) AS category,
+    SUM(review_count) AS total_reviews
+from yelp_business
+GROUP BY
+    1 
+order by 
+    2
+;
+-----------------------------------------------------------------------------------------------------
 ```
