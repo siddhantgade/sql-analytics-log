@@ -1488,4 +1488,24 @@ order by
     2
 ;
 -----------------------------------------------------------------------------------------------------
+12 June 2026
+
+Q) Unified Wine Variety Catalog
+Link: https://platform.stratascratch.com/coding/10025-find-all-possible-varieties-which-occur-in-either-of-the-winemag-datasets?code_type=1
+Keywords: Dataset Consolidation, Duplicate Elimination
+
+Constraints: Varieties must be returned only once, Results must include records from both datasets
+Decision: Return all unique varieties present in either dataset.
+Business Context: Create a master wine variety list by combining entries from multiple wine review sources.
+
+select 
+    variety
+from winemag_p1
+union 
+select 
+    variety
+from winemag_p2
+order by variety
+;
+-----------------------------------------------------------------------------------------------------
 ```
