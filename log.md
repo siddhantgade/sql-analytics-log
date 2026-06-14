@@ -1508,4 +1508,28 @@ from winemag_p2
 order by variety
 ;
 -----------------------------------------------------------------------------------------------------
+14 June 2026
+
+Q) Top 10 Ranked Songs in 2010
+
+Link: https://platform.stratascratch.com/coding/9650-find-the-top-10-ranked-songs-in-2010?code_type=1
+Keywords: Ranking Analysis, Data Filtering
+
+Constraints: Restrict records to year 2010, Return only the first 10 ranks in ascending order
+Decision: Retrieve the top 10 ranked songs for the year 2010.
+Issue Faced: Initially tried a complex CTE-based approach for a problem that required a simple direct query.
+Business Context: Music platforms can use yearly ranking reports to analyze top-performing songs and artist trends.
+
+SELECT 
+    DISTINCT(year_rank),
+    group_name,
+    song_name
+FROM 
+    billboard_top_100_year_end
+WHERE
+    year = 2010
+ORDER BY
+    year_rank ASC
+LIMIT 10;
+-----------------------------------------------------------------------------------------------------
 ```
