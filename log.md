@@ -1532,4 +1532,27 @@ ORDER BY
     year_rank ASC
 LIMIT 10;
 -----------------------------------------------------------------------------------------------------
+15 June 2026
+
+Q) Titanic Survival Report by Passenger Class
+Link: https://platform.stratascratch.com/coding/9881-make-a-report-showing-the-number-of-survivors-and-non-survivors-by-passenger-class?code_type=1
+
+Keywords: Conditional Aggregation, Grouped Reporting
+Constraints: Survival status must remain grouped independently, Missing class matches must contribute 0 to aggregates
+Decision: Count passengers by class for each survival outcome.
+Issue Faced: Used a CTE unnecessarily and did not consider ELSE 0 while using CASE expressions.
+Business Context: Helps analyze how passenger class distribution differed between survivors and non-survivors for reporting and risk assessment.
+
+SELECT
+    survived,
+    SUM(CASE WHEN pclass = 1 THEN 1 ELSE 0 END) AS first_class,
+    SUM(CASE WHEN pclass = 2 THEN 1 ELSE 0 END) AS second_class,
+    SUM(CASE WHEN pclass = 3 THEN 1 ELSE 0 END) AS third_class
+FROM
+    titanic
+GROUP BY
+    survived
+ORDER BY
+    survived;
+-----------------------------------------------------------------------------------------------------
 ```
