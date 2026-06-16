@@ -1555,4 +1555,23 @@ GROUP BY
 ORDER BY
     survived;
 -----------------------------------------------------------------------------------------------------
+16 June 2026
+
+Q) Employee And Manager Salaries
+Link: https://platform.stratascratch.com/coding/9894-employee-and-manager-salaries?code_type=1
+
+Keywords: Hierarchical Relationships, Salary Comparison
+Constraints: Employee records must have a matching manager record, Comparison must be performed between employee and direct manager
+Decision: Identify employees earning more than their managers.
+Issue Faced: Initially compared manager salary against employee salary in the wrong direction and also struggled with applying a self join on the same table.
+Business Context: HR teams can use this analysis to identify compensation anomalies within reporting structures.
+
+SELECT
+    e.first_name,
+    e.salary
+FROM employee e
+JOIN employee m
+    ON e.manager_id = m.id
+WHERE e.salary > m.salary;
+-----------------------------------------------------------------------------------------------------
 ```
