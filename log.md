@@ -1574,4 +1574,30 @@ JOIN employee m
     ON e.manager_id = m.id
 WHERE e.salary > m.salary;
 -----------------------------------------------------------------------------------------------------
+18 June 2026
+
+Q) Symmetric Friends Network
+
+Link: https://platform.stratascratch.com/coding/9813-make-the-friends-network-symmetric?code_type=1
+
+Keywords: Bidirectional Relationships, Data Symmetry
+Constraints: Duplicate mirrored pairs must be removed; Output column order must remain consistent across both queries
+Decision: Create a symmetric friendship network by returning original and reversed relationships.
+Issue Faced: Initially tried a complex CTE-based approach and did not think of using UNION to generate the reverse relationships.
+Business Context: Used in social networking platforms to create a complete friendship graph for recommendation and connectivity analysis.
+
+SELECT
+    friend_id,
+    user_id
+FROM
+    google_friends_network
+
+UNION
+
+SELECT
+    user_id AS friend_id,
+    friend_id AS user_id
+FROM
+    google_friends_network;
+-----------------------------------------------------------------------------------------------------
 ```
