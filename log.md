@@ -1600,4 +1600,34 @@ SELECT
 FROM
     google_friends_network;
 -----------------------------------------------------------------------------------------------------
+21 June 2026
+
+Q) Processed Ticket Rate by Type
+
+Link: https://platform.stratascratch.com/coding/9781-find-the-rate-of-processed-tickets-for-each-type?code_type=1
+Keywords: Aggregation, Ratio Calculation
+
+Constraints: Processed tickets must contribute only to the numerator, Ticket counts must be grouped independently for each type
+Decision: Calculate the processed ticket rate for each complaint type.
+Issue Faced: Forgot to use ROUND() for the required output format and did not multiply by 1.0 to ensure decimal division.
+Business Context: Customer support teams can track processing efficiency across complaint categories to identify operational bottlenecks.
+
+WITH complaint_processing_summary AS (
+    SELECT
+        type,
+        SUM(
+            CASE
+                WHEN processed = TRUE THEN 1
+            END
+        ) AS processed_count,
+        COUNT(type) AS total_count
+    FROM facebook_complaints
+    GROUP BY type
+)
+
+SELECT
+    type,
+    ROUND((processed_count * 1.0 / total_count), 2) AS processed_rate
+FROM complaint_processing_summary;
+-----------------------------------------------------------------------------------------------------
 ```
