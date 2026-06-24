@@ -1630,4 +1630,24 @@ SELECT
     ROUND((processed_count * 1.0 / total_count), 2) AS processed_rate
 FROM complaint_processing_summary;
 -----------------------------------------------------------------------------------------------------
+24 
+
+Q – Customers with Large Orders
+Link: https://platform.stratascratch.com/coding/2172-customers-with-large-orders?code_type=1
+
+Keywords: Filtering, Customer Identification
+Constraints: Orders must be matched to customers using customer_id, Only orders with amount greater than 100 must qualify
+Decision: Identify customers who have placed at least one order above $100.
+Business Context: Marketing teams can use this list to target high-value customers for loyalty and retention campaigns.
+
+SELECT
+    DISTINCT
+    c.customer_id,
+    c.customer_name
+FROM online_store_customers c
+INNER JOIN online_store_orders o
+    ON c.customer_id = o.customer_id
+WHERE o.amount > 100
+ORDER BY c.customer_id;
+-----------------------------------------------------------------------------------------------------
 ```
