@@ -1650,4 +1650,29 @@ INNER JOIN online_store_orders o
 WHERE o.amount > 100
 ORDER BY c.customer_id;
 -----------------------------------------------------------------------------------------------------
+25 June 2026
+
+Q) Department Workforce Analysis
+Link: https://platform.stratascratch.com/coding/2170-department-workforce-analysis?code_type=1
+
+Keywords: Row-level filtering, Group aggregation
+Constraints: Employee filtering must occur before grouping, Department eligibility must be based on aggregated employee count
+Decision: Include only employees who joined after the cutoff date before evaluating department-level metrics.
+Issue Faced: Initially treated the joining date condition as a department-level filter and attempted to apply it after grouping instead of filtering individual employee records first.
+Business Context: HR teams can use this analysis to evaluate payroll and workforce metrics for recently hired employees across departments.
+
+sql
+SELECT
+    department,
+    COUNT(id) AS headcount,
+    SUM(salary) AS total_payroll,
+    AVG(salary) AS avg_salary
+FROM techcorp_workforce
+WHERE
+    joining_date > '2020-01-01'
+GROUP BY
+    department
+HAVING
+    COUNT(id) >= 5;
+-----------------------------------------------------------------------------------------------------
 ```
