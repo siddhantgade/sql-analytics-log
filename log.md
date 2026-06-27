@@ -1675,4 +1675,30 @@ GROUP BY
 HAVING
     COUNT(id) >= 5;
 -----------------------------------------------------------------------------------------------------
+27 June 2026
+
+Q) Flags per Video | Link: https://platform.stratascratch.com/coding/2102-flags-per-video?code_type=1
+Keywords: Deduplication, String Concatenation as Composite Key
+
+Constraints: DISTINCT must wrap CONCAT, not individual columns | flag_id nulls must be filtered before aggregation
+Decision: Count unique users per video by treating concatenated first and last name as a single identity key
+Issue Faced: Attempted to place DISTINCT inside CONCAT and used nested subqueries within COUNT before arriving at COUNT(DISTINCT CONCAT(...))
+Business Context: Useful in content moderation pipelines to measure unique user reporting volume per piece of content, avoiding duplicate flags from the same user.
+
+WITH flagged_videos AS (
+    SELECT
+        video_id,
+        COUNT(DISTINCT CONCAT(user_firstname, user_lastname)) AS unique_flagged_users
+    FROM
+        user_flags
+    WHERE
+        flag_id IS NOT NULL
+    GROUP BY
+        video_id
+)
+SELECT
+    video_id,
+    unique_flagged_users
+FROM flagged_videos;
+-----------------------------------------------------------------------------------------------------
 ```
