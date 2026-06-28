@@ -1701,4 +1701,28 @@ SELECT
     unique_flagged_users
 FROM flagged_videos;
 -----------------------------------------------------------------------------------------------------
+28 June 2026
+
+Q) Maximum of Two Numbers
+
+Link: https://platform.stratascratch.com/coding/2101-maximum-of-two-numbers?code_type=1
+Keywords: Combinatorics, Row-level Comparison
+
+Constraints: CASE WHEN used instead of GREATEST due to platform compatibility; CROSS JOIN used with no ON condition to generate all permutations including self-pairs
+Decision: Generate all row combinations via self-join and derive the maximum of each pair using conditional logic
+Issue Faced: Initially attempted INNER JOIN with equality condition on the only column, which restricted pairs instead of producing all permutations; also confused MAX aggregate with row-level comparison, requiring a shift to CASE WHEN after GREATEST was unsupported
+Business Context: Useful in risk scoring systems where all pairwise combinations of values must be evaluated to surface the dominant metric in each pair
+
+SELECT
+    dm1.number,
+    dm2.number,
+    CASE
+        WHEN dm1.number > dm2.number THEN dm1.number
+        ELSE dm2.number
+    END AS max_of_two
+FROM 
+	deloitte_numbers dm1
+CROSS JOIN 
+	deloitte_numbers dm2;
+-----------------------------------------------------------------------------------------------------
 ```
