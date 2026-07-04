@@ -1725,4 +1725,20 @@ FROM
 CROSS JOIN 
 	deloitte_numbers dm2;
 -----------------------------------------------------------------------------------------------------
+4 July 2026
+
+Q) Share of Active Users
+Link: https://platform.stratascratch.com/coding/2005-share-of-active-users?code_type=1
+Keywords: Conditional Aggregation, Ratio Calculation
+
+Constraints: Evaluate condition across all rows before dividing; avoid integer division
+Decision: Calculate percentage of active USA users out of total users in one aggregate pass.
+Issue Faced: Approached row-level instead of aggregate-level; assumed data conditions instead of verifying.
+Business Context: Helps a growth team track regional engagement share.
+
+SELECT
+    SUM(CASE WHEN country = 'USA' AND status = 'open' THEN 1 ELSE 0 END) * 100.0
+    / COUNT(*) AS us_active_share
+FROM fb_active_users;
+-----------------------------------------------------------------------------------------------------
 ```
