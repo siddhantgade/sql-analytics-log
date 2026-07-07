@@ -1741,4 +1741,25 @@ SELECT
     / COUNT(*) AS us_active_share
 FROM fb_active_users;
 -----------------------------------------------------------------------------------------------------
+7 July 2026
+
+Q) Find Employees With the Same Salary
+Link: https://platform.stratascratch.com/coding/9856-find-employees-with-the-same-salary?code_type=1
+
+Keywords: Self-join, Duplicate detection
+Constraints: Exclude matching a row with itself, Distinct pairs only
+Decision: Identify workers who share salary values with at least one other worker.
+Issue Faced: Initially missed excluding self-matches when joining the table to itself, corrected after review.
+Business Context: HR teams use this to flag potential pay parity or banding inconsistencies during compensation reviews.
+
+SELECT DISTINCT
+    worker1.worker_id,
+    worker1.first_name,
+    worker1.salary
+FROM worker worker1
+CROSS JOIN worker worker2
+WHERE worker1.salary = worker2.salary
+    AND worker1.worker_id <> worker2.worker_id
+ORDER BY worker1.salary DESC;
+-----------------------------------------------------------------------------------------------------
 ```
