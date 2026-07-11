@@ -1762,4 +1762,33 @@ WHERE worker1.salary = worker2.salary
     AND worker1.worker_id <> worker2.worker_id
 ORDER BY worker1.salary DESC;
 -----------------------------------------------------------------------------------------------------
+11 July 2026
+
+Q) Users by Average Session Time
+Link: https://platform.stratascratch.com/coding/10352-users-by-avg-session-time?code_type=1
+
+Keywords: conditional aggregation, date-level grouping
+Constraints: session must be scoped to a single calendar day; load event must precede exit event within that day
+Decision: Collapse multiple daily events into one session per user per day before averaging duration across days.
+
+Issue Faced: Initially unclear on why an intermediate per-day aggregation step was needed before averaging, and on how to isolate calendar date without losing full date precision.
+
+Business Context: Product teams use average session duration per user to gauge engagement depth and identify usage patterns over time.
+
+WITH daily_sessions AS (
+    SELECT
+        user_id,
+        DATE(timestamp) AS session_day,
+        MAX(CASE WHEN action = 'page_load' THEN timestamp END) AS latest_load,
+        MIN(CASE WHEN action = 'page_exit' THEN timestamp END) AS earliest_exit
+    FROM user_actions
+    GROUP BY user_id, DATE(timestamp)
+)
+SELECT
+    user_id,
+    AVG(earliest_exit - latest_load) AS avg_session_time
+FROM daily_sessions
+WHERE latest_load < earliest_exit
+GROUP BY user_id;
+-----------------------------------------------------------------------------------------------------
 ```
